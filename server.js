@@ -8,7 +8,7 @@ const port = process.env.PORT || 8080;
 cors_proxy.createServer({
     originWhitelist: [], // Allow all origins
     requireHeader: [], // Don't require any specific headers
-    removeHeaders: ['cookie', 'cookie2'], // Remove cookies for security
+    // removeHeaders: ['cookie', 'cookie2'], // Cookies are needed for Appwrite auth!
     handleInitialRequest: (req, res, location) => {
         // Simple health check endpoint for UptimeRobot
         if (req.method === 'GET' && req.url === '/health') {
