@@ -9,6 +9,10 @@ cors_proxy.createServer({
     originWhitelist: [], // Allow all origins
     requireHeader: [], // Don't require any specific headers
     // removeHeaders: ['cookie', 'cookie2'], // Cookies are needed for Appwrite auth!
+    setHeaders: {
+        'origin': 'https://fra.cloud.appwrite.io',
+        'x-requested-with': 'XMLHttpRequest'
+    },
     handleInitialRequest: (req, res, location) => {
         // Simple health check endpoint for UptimeRobot
         if (req.method === 'GET' && req.url === '/health') {
