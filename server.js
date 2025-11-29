@@ -53,12 +53,21 @@ server.on('upgrade', function (req, socket, head) {
 
 // Intercept WebSocket handshake to ensure headers are correct
 proxy.on('proxyReqWs', function(proxyReq, req, socket, options, head) {
-    proxyReq.setHeader('Origin', 'https://fra.cloud.appwrite.io');
-    proxyReq.setHeader('X-Requested-With', 'XMLHttpRequest');
-    proxyReq.setHeader('User-Agent', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36');
+    console.log("Proxying WebSocket Handshake...");
+    // Use a standard local origin which is usually allowed by * wildcard
+    proxyReq.setHeader('Origin', 'http://localhost');
     // Remove cookies to prevent interference with fallback auth
     proxyReq.removeHeader('Cookie');
     proxyReq.removeHeader('cookie');
+});
+
+// Global error handler
+proxy.on('error', function (err, req, res) {
+    console.error("Global Proxy Error:", err);
+    if (res && res.writeHead) {
+        res.writeHead(500, { 'Content-Type': 'text/plain' });
+        res.end('Proxy Error');
+    }
 });
 
 server.listen(port, host, function() {
