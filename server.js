@@ -51,14 +51,12 @@ server.on('upgrade', function (req, socket, head) {
     });
 });
 
-// Intercept WebSocket handshake to ensure headers are correct
+// Intercept WebSocket handshake to set proper headers
 proxy.on('proxyReqWs', function(proxyReq, req, socket, options, head) {
     console.log("Proxying WebSocket Handshake...");
-    // Use a standard local origin which is usually allowed by * wildcard
+    // Set a standard local origin
     proxyReq.setHeader('Origin', 'http://localhost');
-    // Remove cookies to prevent interference with fallback auth
-    proxyReq.removeHeader('Cookie');
-    proxyReq.removeHeader('cookie');
+    // DO NOT remove cookies - the SDK needs them for session-based auth
 });
 
 // Global error handler
