@@ -46,7 +46,13 @@ const server = http.createServer(function(req, res) {
 // Listen for the 'upgrade' event for WebSocket connections
 server.on('upgrade', function (req, socket, head) {
     console.log("Upgrading to WebSocket...");
-    proxy.ws(req, socket, head, { target: 'https://fra.cloud.appwrite.io' });
+    proxy.ws(req, socket, head, { 
+        target: 'https://fra.cloud.appwrite.io',
+        headers: {
+            'Origin': 'https://fra.cloud.appwrite.io',
+            'X-Requested-With': 'XMLHttpRequest'
+        }
+    });
 });
 
 server.listen(port, host, function() {
