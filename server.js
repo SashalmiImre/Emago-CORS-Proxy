@@ -47,12 +47,18 @@ const server = http.createServer(function(req, res) {
 server.on('upgrade', function (req, socket, head) {
     console.log("Upgrading to WebSocket...");
     proxy.ws(req, socket, head, { 
-        target: 'https://fra.cloud.appwrite.io',
-        headers: {
-            'Origin': 'https://fra.cloud.appwrite.io',
-            'X-Requested-With': 'XMLHttpRequest'
-        }
+        target: 'https://fra.cloud.appwrite.io'
     });
+});
+
+// Intercept WebSocket handshake to ensure headers are correct
+proxy.on('proxyReqWs', function(proxyReq, req, socket, options, head) {
+    proxyReq.setHeader('Origin', 'https://fra.cloud.appwrite.io');
+    proxyReq.setHeader('X-Requested-With', 'XMLHttpRequest');
+    proxyReq.setHeader('User-Agent', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36');
+    // Remove cookies to prevent interference with fallback auth
+    proxyReq.removeHeader('Cookie');
+    proxyReq.removeHeader('cookie');
 });
 
 server.listen(port, host, function() {
